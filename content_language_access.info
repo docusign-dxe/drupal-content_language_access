@@ -1,0 +1,6 @@
+name = Content language access
+description = Restricts access of contents by its language.
+core = 6.x
+package = Access control
+dependencies[] = locale
+dependencies[] = node
