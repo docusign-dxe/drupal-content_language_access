@@ -10,19 +10,27 @@
 /**
  * Implementation of hook_menu_alter().
  */
-function content_language_access_menu_alter(&$callbacks) {
+function content_language_access_menu_alter(&$items) {
   // Use _content_language_access_node_access() instead of node_access().
-  // TODO check if this is not overrriding any other access callback
-  $callbacks['node/%node']['access callback'] = '_content_language_access_node_access';
+  $old_callback = $callbacks['node/%node']['access callback'];
+  // check if we are not overrriding the another access callback
+  if ($old_callback == 'node_access') {
+    // keep as null if it is already node_access callback
+    $old_callback = NULL;
+  }
+
+  $items['node/%node']['access callback'] = $items['node/%node/view']['access callback'] = '_content_language_access_node_access';
+  // adding aditional parameter to the access arguments containing the old callback
+  $items['node/%node']['access arguments']= $items['node/%node/view']['access arguments']= array('view', 1, NULL, $old_callback);
 
 }
 
 /**
- * Wrapper around node_access() with additional checks for language permissions.
+ * Wrapper around node_access() or another callback with additional checks for language permissions.
  *
  * @see node_access()
  */
-function _content_language_access_node_access($op, $node, $account = NULL) {
+function _content_language_access_node_access($op, $node, $account = NULL, $old_callback = NULL) {
   global $user;
   global $language;
 
@@ -35,7 +43,12 @@ function _content_language_access_node_access($op, $node, $account = NULL) {
     $node = (object)$node;
   }
 
-  $access = node_access($op, $node, $account);
+  if ($old_callback != NULL && function_exists($old_callback)) {
+    $access = $old_callback($op, $node, $account);
+  }
+  else {
+    $access = node_access($op, $node, $account);
+  }
 
   // Bypass completely if access returns false.
   if (!$access) {
