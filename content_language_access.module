@@ -19,17 +19,19 @@ function content_language_access_menu_alter(&$items) {
   }
 
   $items['node/%node']['access callback']
-      = $items['node/%node/view']['access callback']
-      = '_content_language_access_node_access';
+    = $items['node/%node/view']['access callback']
+    = '_content_language_access_node_access';
   // Adding aditional parameter to the access arguments containing the old
   // callback.
   $items['node/%node']['access arguments']
-      = $items['node/%node/view']['access arguments']
-      = array('view', 1, NULL, $old_callback);
+    = $items['node/%node/view']['access arguments']
+    = array('view', 1, NULL, $old_callback);
 }
 
 /**
- * Wrapper around node_access() or another callback with additional checks for language permissions.
+ * Access callback for node/%node
+ * Wrapper around node_access() or another callback with additional checks for
+ * language permissions.
  *
  * @see node_access()
  */
