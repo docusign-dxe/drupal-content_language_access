@@ -2,7 +2,7 @@
 
 /**
  * @file
- * This module provides access checking for the current language of the site 
+ * This module provides access checking for the current language of the site
  * with the language of the content (language neutral are not considered).
  */
 
@@ -18,19 +18,18 @@ function content_language_access_menu_alter(&$items) {
     $old_callback = NULL;
   }
 
-  $items['node/%node']['access callback'] = 
-      $items['node/%node/view']['access callback'] = 
-      '_content_language_access_node_access';
-  // Adding aditional parameter to the access arguments containing the old 
+  $items['node/%node']['access callback']
+      = $items['node/%node/view']['access callback']
+      = '_content_language_access_node_access';
+  // Adding aditional parameter to the access arguments containing the old
   // callback.
-  $items['node/%node']['access arguments'] = 
-      $items['node/%node/view']['access arguments'] = 
-      array('view', 1, NULL, $old_callback);
+  $items['node/%node']['access arguments']
+      = $items['node/%node/view']['access arguments']
+      = array('view', 1, NULL, $old_callback);
 }
 
 /**
- * Wrapper around node_access() or another callback with additional checks for 
- * language permissions.
+ * Wrapper around node_access() or another callback with additional checks for language permissions.
  *
  * @see node_access()
  */
