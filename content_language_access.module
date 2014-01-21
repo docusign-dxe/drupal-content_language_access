@@ -29,7 +29,7 @@ function content_language_access_menu_alter(&$items) {
 }
 
 /**
- * Access callback for node/%node
+ * Access callback for node/%node.
  *
  * Wrapper around node_access() or another callback with additional checks for
  * language permissions.
