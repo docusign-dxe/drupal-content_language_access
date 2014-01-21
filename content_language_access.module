@@ -2,31 +2,35 @@
 
 /**
  * @file
- *
- * This module provides access checking for the current language of the site with the
- * language of the content (language neutral are not considered).
+ * This module provides access checking for the current language of the site 
+ * with the language of the content (language neutral are not considered).
  */
 
 /**
- * Implementation of hook_menu_alter().
+ * Implements hook_menu_alter().
  */
 function content_language_access_menu_alter(&$items) {
   // Use _content_language_access_node_access() instead of node_access().
-  $old_callback = $callbacks['node/%node']['access callback'];
-  // check if we are not overrriding the another access callback
+  $old_callback = $items['node/%node']['access callback'];
+  // Check if we are not overrriding the another access callback.
   if ($old_callback == 'node_access') {
-    // keep as null if it is already node_access callback
+    // Keep as null if it is already node_access callback.
     $old_callback = NULL;
   }
 
-  $items['node/%node']['access callback'] = $items['node/%node/view']['access callback'] = '_content_language_access_node_access';
-  // adding aditional parameter to the access arguments containing the old callback
-  $items['node/%node']['access arguments']= $items['node/%node/view']['access arguments']= array('view', 1, NULL, $old_callback);
-
+  $items['node/%node']['access callback'] = 
+      $items['node/%node/view']['access callback'] = 
+      '_content_language_access_node_access';
+  // Adding aditional parameter to the access arguments containing the old 
+  // callback.
+  $items['node/%node']['access arguments'] = 
+      $items['node/%node/view']['access arguments'] = 
+      array('view', 1, NULL, $old_callback);
 }
 
 /**
- * Wrapper around node_access() or another callback with additional checks for language permissions.
+ * Wrapper around node_access() or another callback with additional checks for 
+ * language permissions.
  *
  * @see node_access()
  */
@@ -40,7 +44,7 @@ function _content_language_access_node_access($op, $node, $account = NULL, $old_
   }
   // Convert the node to an object if necessary:
   if ($op != 'create') {
-    $node = (object)$node;
+    $node = (object) $node;
   }
 
   if ($old_callback != NULL && function_exists($old_callback)) {
@@ -55,20 +59,20 @@ function _content_language_access_node_access($op, $node, $account = NULL, $old_
     return FALSE;
   }
 
-  // Only checks for view permission
+  // Only checks for view permission.
   if ($op != 'view') {
     return TRUE;
   }
 
-  // Language neutral are always allowed
+  // Language neutral are always allowed.
   if ($node->language) {
-    // Verifies if the current language is the same of the content
+    // Verifies if the current language is the same of the content.
     if ($node->language == $language->language) {
       return TRUE;
     }
   }
   else {
-    // Language neutral are always allowed
+    // Language neutral are always allowed.
     return TRUE;
   }
 
