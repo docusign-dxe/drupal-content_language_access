@@ -49,10 +49,10 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
     $this->addLanguage('fr');
     $this->addLanguage('pt-br');
     // Set path languages so we can retrieve pages in different languages.
-    $negotation = array(
+    $negotiation = array(
       LOCALE_LANGUAGE_NEGOTIATION_URL => 1,
     );
-    language_negotiation_set(LANGUAGE_TYPE_INTERFACE, $negotation);
+    language_negotiation_set(LANGUAGE_TYPE_INTERFACE, $negotiation);
   }
 
   /**
