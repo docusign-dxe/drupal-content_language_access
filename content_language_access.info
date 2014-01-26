@@ -1,6 +1,8 @@
 name = Content language access
 description = Provides access checking of the current language of the site with the language of the content.
-core = 6.x
+core = 7.x
 package = Access control
 dependencies[] = locale
 dependencies[] = node
+
+files[] = content_language_access.test

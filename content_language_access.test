@@ -10,7 +10,7 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   /**
    * Implements getInfo().
    */
-  public function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Content Language Access'),
       'description' => t('Test the features of content_language_access module.'),
@@ -22,9 +22,10 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
    * Implements setUp().
    */
   public function setUp() {
-    parent::setUp('locale', 'node');
+    parent::setUp('content_language_access');
 
     $this->admin_user = $this->drupalCreateUser(array(
+      'administer languages',
       'administer site configuration',
       'access administration pages',
       'administer content types',
@@ -48,7 +49,10 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
     $this->addLanguage('fr');
     $this->addLanguage('pt-br');
     // Set path languages so we can retrieve pages in different languages.
-    variable_set('language_negotiation', LANGUAGE_NEGOTIATION_PATH);
+    $negotation = array(
+      LOCALE_LANGUAGE_NEGOTIATION_URL => 1,
+    );
+    language_negotiation_set(LANGUAGE_TYPE_INTERFACE, $negotation);
   }
 
   /**
@@ -72,6 +76,7 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
     foreach ($languages as $language_key => $language) {
       $settings = array();
       $settings['title'] = 'Test ' . $language->name;
+      $settings['body'][$language_key][0] = array();
       $settings['language'] = $language_key;
 
       $this->nodes[$language_key] = $this->drupalCreateNode($settings);
@@ -116,10 +121,11 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
       // Doesn't have language installed so add it.
       $edit = array();
       $edit['langcode'] = $language_code;
-      $this->drupalPost('admin/settings/language/add', $edit, t('Add language'));
+      $this->drupalPost('admin/config/regional/language/add', $edit, t('Add language'));
 
       // Make sure not using cached version.
-      $languages = language_list('language', TRUE);
+      drupal_static_reset('language_list');
+      $languages = language_list('language');
       $this->assertTrue(array_key_exists($language_code, $languages), t('Language was installed successfully.'));
 
       if (array_key_exists($language_code, $languages)) {

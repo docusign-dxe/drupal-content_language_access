@@ -7,96 +7,40 @@
  */
 
 /**
- * Implements hook_menu_alter().
- */
-function content_language_access_menu_alter(&$items) {
-  // Check if we are not overrriding the another access callback.
-  $old_callback = $items['node/%node']['access callback'];
-  if ($old_callback == 'node_access') {
-    // Keep as null if it is already node_access callback.
-    $old_callback = NULL;
-  }
-
-  // Use _content_language_access_node_access() instead of node_access().
-  $items['node/%node']['access callback']
-    = $items['node/%node/view']['access callback']
-      = '_content_language_access_node_access';
-  // Adding aditional parameter to the access arguments containing the old
-  // callback.
-  $items['node/%node']['access arguments']
-    = $items['node/%node/view']['access arguments']
-      = array('view', 1, NULL, $old_callback);
-}
-
-/**
- * Access callback for node/%node.
+ * Implements hook_node_access().
  *
- * Wrapper around node_access() or another callback with additional checks for
- * language permissions.
- *
- * @global object $user
  * @global object $language
  *
+ * @param object $node
+ *   The node object (or node array) on which the operation is to be performed,
+ *   or node type (e.g. 'forum') for "create" operation.
  * @param string $op
  *   The operation to be performed on the node. Possible values are:
  *   - "view"
  *   - "update"
  *   - "delete"
  *   - "create"
- * @param object $node
- *   The node object (or node array) on which the operation is to be performed,
- *   or node type (e.g. 'forum') for "create" operation.
  * @param object $account
  *   Optional, a user object representing the user for whom the operation is to
  *   be performed. Determines access for a user other than the current user.
- * @param string $old_callback
- *   Optional, a function name containing the old callback.
  *
- * @return bool
- *   TRUE if the operation may be performed, or FALSE otherwise.
- *
- * @see node_access()
+ * @return string
+ *   NODE_ACCESS_ALLOW: if the operation is to be allowed.
+ *   NODE_ACCESS_DENY: if the operation is to be denied.
+ *   NODE_ACCESS_IGNORE: to not affect this operation at all.
  */
-function _content_language_access_node_access($op, $node, $account = NULL, $old_callback = NULL) {
-  global $user;
+function content_language_access_node_access($node, $op, $account) {
   global $language;
 
-  // If no user object is supplied, the access check is for the current user.
-  if (empty($account)) {
-    $account = $user;
-  }
-  // Convert the node to an object if necessary:
-  if ($op != 'create') {
-    $node = (object) $node;
-  }
-
-  if ($old_callback != NULL && function_exists($old_callback)) {
-    $access = $old_callback($op, $node, $account);
-  }
-  else {
-    $access = node_access($op, $node, $account);
-  }
-
-  // Bypass completely if access returns false.
-  if (!$access) {
-    return FALSE;
-  }
-
   // Only checks for view permission.
-  if ($op != 'view') {
-    return TRUE;
-  }
-
-  if ($node->language) {
-    // Verifies if the current language is the same of the content.
-    if ($node->language == $language->language) {
-      return TRUE;
+  if (is_object($node) && $op == 'view') {
+    if ($node->language) {
+      // Verifies if the current language is the same of the content.
+      if ($node->language != $language->language) {
+        return NODE_ACCESS_DENY;
+      }
     }
   }
-  else {
-    // Language neutral are always allowed.
-    return TRUE;
-  }
 
-  return FALSE;
+  return NODE_ACCESS_IGNORE;
 }
