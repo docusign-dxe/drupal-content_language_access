@@ -1,4 +1,3 @@
-
 Content Language Access Module restricts the access of only contents with
 language (except neutral language) that are equal of the actual Drupal
 language being accessed.
@@ -19,12 +18,12 @@ Example
 
   Results:
     www.example.com/node/20 - response: 200 - OK
-    www.exemple.com.br/node/20 - response: 403 - Access Denied
+    www.example.com.br/node/20 - response: 403 - Access Denied
 
-    www.exemple.com/node/21 - response: 403 - Access Denied
+    www.example.com/node/21 - response: 403 - Access Denied
     www.example.com.br/node/21 - response: 200 - OK
 
-    www.exemple.com/node/22 - response: 200 - OK
+    www.example.com/node/22 - response: 200 - OK
     www.example.com.br/node/22 - response: 200 - OK
 
 

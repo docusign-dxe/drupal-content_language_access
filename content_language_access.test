@@ -2,14 +2,15 @@
 
 /**
  * @file
- *
+ * Test suite for content language access module
  */
+
 class ContentLanguageAccessTestCase extends DrupalWebTestCase {
 
   /**
-   * Implementation of getInfo().
+   * Implements getInfo().
    */
-  function getInfo() {
+  public function getInfo() {
     return array(
       'name' => t('Content Language Access'),
       'description' => t('Test the features of content_language_access module.'),
@@ -18,13 +19,12 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Implementation of setUp().
+   * Implements setUp().
    */
-  function setUp() {
-    //parent::setUp('locale', 'node');
+  public function setUp() {
+    parent::setUp('locale', 'node');
 
     $this->admin_user = $this->drupalCreateUser(array(
-      'administer languages',
       'administer site configuration',
       'access administration pages',
       'administer content types',
@@ -39,22 +39,32 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
     $this->createContents();
   }
 
-  function configureLanguages() {
+  /**
+   * Creates the languages for the test execution
+   */
+  private function configureLanguages() {
     $this->drupalLogin($this->admin_user);
 
     $this->addLanguage('fr');
     $this->addLanguage('pt-br');
-    // Set path languages so we can retrieve pages in different languages
+    // Set path languages so we can retrieve pages in different languages.
     variable_set('language_negotiation', LANGUAGE_NEGOTIATION_PATH);
   }
 
-  function createContentType() {
+  /**
+   * Creates a randon content type for test execution
+   */
+  private function createContentType() {
     $settings = array();
+    // Set the content type multilangual suport to full.
     $settings['language_content_type'] = 2;
     $this->content_type = $this->drupalCreateContentType($settings);
   }
 
-  function createContents() {
+  /**
+   * Creates a content for each language for the tests
+   */
+  private function createContents() {
     $this->drupalLogin($this->admin_user);
 
     $languages = $this->getLanguageList();
@@ -68,10 +78,20 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
     }
   }
 
-  function getLanguageList($neutral_language = TRUE) {
+  /**
+   * Returns the list of languages available
+   *
+   * @param bool $with_neutral_language
+   *   Optional, specifies if the function needs to return also the neutral
+   *   language
+   *
+   * @return array
+   *   With all the languagues available (plus the neutral language)
+   */
+  private function getLanguageList($with_neutral_language = TRUE) {
     $languages = language_list();
 
-    if ($neutral_language) {
+    if ($with_neutral_language) {
       $languages[''] = (object) array(
         'prefix' => '',
         'language' => '',
@@ -83,12 +103,12 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Enable the specified language if it has not been already.
+   * Enables the specified language if it has not been already
    *
    * @param string $language_code
    *   The language code to enable.
    */
-  function addLanguage($language_code) {
+  private function addLanguage($language_code) {
     // Check to make sure that language has not already been installed.
     $this->drupalGet('admin/settings/language');
 
@@ -98,7 +118,8 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
       $edit['langcode'] = $language_code;
       $this->drupalPost('admin/settings/language/add', $edit, t('Add language'));
 
-      $languages = language_list('language', TRUE); // Make sure not using cached version.
+      // Make sure not using cached version.
+      $languages = language_list('language', TRUE);
       $this->assertTrue(array_key_exists($language_code, $languages), t('Language was installed successfully.'));
 
       if (array_key_exists($language_code, $languages)) {
@@ -113,7 +134,10 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
     }
   }
 
-  function testContentLanguageAccess() {
+  /**
+   * Tests each content in each language
+   */
+  public function testContentLanguageAccess() {
     $this->drupalLogin($this->visitor);
 
     $languages = $this->getLanguageList(FALSE);
