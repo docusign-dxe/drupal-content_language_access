@@ -83,7 +83,7 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
    *
    * @param bool $with_neutral_language
    *   Optional, specifies if the function needs to return also the neutral
-   *   language
+   *   language.
    *
    * @return array
    *   With all the languagues available (plus the neutral language)
