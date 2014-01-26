@@ -40,9 +40,9 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Creates the languages for the test execution
+   * Creates the languages for the test execution.
    */
-  private function configureLanguages() {
+  protected function configureLanguages() {
     $this->drupalLogin($this->admin_user);
 
     $this->addLanguage('fr');
@@ -52,9 +52,9 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Creates a randon content type for test execution
+   * Creates a randon content type for test execution.
    */
-  private function createContentType() {
+  protected function createContentType() {
     $settings = array();
     // Set the content type multilangual suport to full.
     $settings['language_content_type'] = 2;
@@ -62,16 +62,16 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Creates a content for each language for the tests
+   * Creates a content for each language for the tests.
    */
-  private function createContents() {
+  protected function createContents() {
     $this->drupalLogin($this->admin_user);
 
     $languages = $this->getLanguageList();
 
     foreach ($languages as $language_key => $language) {
       $settings = array();
-      $settings['title'] = 'Test ' + $language->name;
+      $settings['title'] = 'Test ' . $language->name;
       $settings['language'] = $language_key;
 
       $this->nodes[$language_key] = $this->drupalCreateNode($settings);
@@ -79,7 +79,7 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Returns the list of languages available
+   * Returns the list of languages available.
    *
    * @param bool $with_neutral_language
    *   Optional, specifies if the function needs to return also the neutral
@@ -88,7 +88,7 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
    * @return array
    *   With all the languagues available (plus the neutral language)
    */
-  private function getLanguageList($with_neutral_language = TRUE) {
+  protected function getLanguageList($with_neutral_language = TRUE) {
     $languages = language_list();
 
     if ($with_neutral_language) {
@@ -103,12 +103,12 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Enables the specified language if it has not been already
+   * Enables the specified language if it has not been already.
    *
    * @param string $language_code
    *   The language code to enable.
    */
-  private function addLanguage($language_code) {
+  protected function addLanguage($language_code) {
     // Check to make sure that language has not already been installed.
     $this->drupalGet('admin/settings/language');
 
@@ -135,7 +135,7 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Tests each content in each language
+   * Tests each content in each language.
    */
   public function testContentLanguageAccess() {
     $this->drupalLogin($this->visitor);
