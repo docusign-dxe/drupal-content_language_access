@@ -22,9 +22,10 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
    * Implements setUp().
    */
   public function setUp() {
-    parent::setUp('locale', 'node');
+    parent::setUp('node', 'locale', 'content_language_access');
 
     $this->admin_user = $this->drupalCreateUser(array(
+      'administer languages',
       'administer site configuration',
       'access administration pages',
       'administer content types',
