@@ -5,9 +5,6 @@ package = Access control
 dependencies[] = locale
 dependencies[] = node
 
-files[] = content_language_access.admin.inc
-files[] = content_language_access.install
-files[] = content_language_access.module
 files[] = content_language_access.test
 
 configure = admin/config/content_language_access
