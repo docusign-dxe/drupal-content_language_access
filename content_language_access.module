@@ -7,6 +7,22 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function content_language_access_menu() {
+  $items['admin/settings/content_language_access'] = array(
+    'title' => t('Content language access'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('content_language_access_admin_form'),
+    'access arguments' => array('administer content_language_access settings'),
+    'file' => 'content_language_access.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
  * Implements hook_menu_alter().
  */
 function content_language_access_menu_alter(&$items) {
@@ -18,14 +34,38 @@ function content_language_access_menu_alter(&$items) {
   }
 
   // Use _content_language_access_node_access() instead of node_access().
-  $items['node/%node']['access callback']
-    = $items['node/%node/view']['access callback']
-      = '_content_language_access_node_access';
+  $items['node/%node']['access callback'] =
+    $items['node/%node/view']['access callback'] =
+      '_content_language_access_node_access';
   // Adding aditional parameter to the access arguments containing the old
   // callback.
-  $items['node/%node']['access arguments']
-    = $items['node/%node/view']['access arguments']
-      = array('view', 1, NULL, $old_callback);
+  $items['node/%node']['access arguments'] =
+    $items['node/%node/view']['access arguments'] =
+      array('view', 1, NULL, $old_callback);
+}
+
+/**
+ * Implements hook_help().
+ */
+function content_language_access_help($path, $arg) {
+  switch ($path) {
+    // Main module help for the content_language_access module.
+    case 'admin/help#content_language_access':
+      return '<p>' . t('Content Language Access Module restricts the access of only contents with language (except neutral language) that are equal of the actual Drupal language being accessed or others that were previous configured in the <a href="@content_language_acess">admin page</a>.', array('@content_language_acess' => url('admin/settings/content_language_access'))) . '</p>';
+
+    // Help for admin page for the content_language_access module.
+    case 'admin/settings/content_language_access':
+      return '<p>' . t('This page provides an interface for configuring more languages that can be accessed from a Drupal language') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_perm().
+ */
+function content_language_access_perm() {
+  return array(
+    'administer content_language_access settings',
+  );
 }
 
 /**
@@ -65,6 +105,12 @@ function _content_language_access_node_access($op, $node, $account = NULL, $old_
   if (empty($account)) {
     $account = $user;
   }
+
+  // User #1 has all privileges:
+  if ($account->uid == 1) {
+    return TRUE;
+  }
+
   // Convert the node to an object if necessary:
   if ($op != 'create') {
     $node = (object) $node;
@@ -92,6 +138,14 @@ function _content_language_access_node_access($op, $node, $account = NULL, $old_
     if ($node->language == $language->language) {
       return TRUE;
     }
+    else {
+      // Checks the configuration defined in admin page.
+      $config = _content_language_access_get_config();
+      $actual_language_permission = isset($config[$language->language][$node->language]) ? $config[$language->language][$node->language] : FALSE;
+      if ($actual_language_permission) {
+        return TRUE;
+      }
+    }
   }
   else {
     // Language neutral are always allowed.
@@ -99,4 +153,13 @@ function _content_language_access_node_access($op, $node, $account = NULL, $old_
   }
 
   return FALSE;
+}
+
+/**
+ * Helper to get all the config available for the module
+ * @return array
+ *   All configuration from admin/settings/content_language_access page.
+ */
+function _content_language_access_get_config() {
+  return variable_get('content_language_access', array());
 }

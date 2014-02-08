@@ -1,5 +1,5 @@
 name = Content language access
-description = Provides access checking of the current language of the site with the language of the content.
+description = Provides access checking of the current language of the site against the language of the content.
 core = 6.x
 package = Access control
 dependencies[] = locale

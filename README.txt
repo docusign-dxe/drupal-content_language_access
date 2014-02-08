@@ -1,9 +1,10 @@
 Content Language Access Module restricts the access of only contents with
 language (except neutral language) that are equal of the actual Drupal
-language being accessed.
+language being accessed or others that were previous configured in the admin
+page.
 
 This module helps when you have a content that needs to have access restriction
-by domains (mainly by legal issues).
+by Drupal language.
 
 Example
 ------------
