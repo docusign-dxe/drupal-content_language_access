@@ -11,7 +11,7 @@
  */
 function content_language_access_menu() {
   $items['admin/settings/content_language_access'] = array(
-    'title' => t('Content language access'),
+    'title' => 'Content language access',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('content_language_access_admin_form'),
     'access arguments' => array('administer content_language_access settings'),
@@ -157,7 +157,7 @@ function _content_language_access_node_access($op, $node, $account = NULL, $old_
 
 /**
  * Helper to get all the config available for the module.
- * 
+ *
  * @return array
  *   All configuration from admin/settings/content_language_access page.
  */
