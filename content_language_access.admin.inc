@@ -6,9 +6,15 @@
  */
 
 /**
- * Implements hook_menu().
+ * Administration form for content language access module.
+ *
+ * @param array $form_state
+ *   Optional, the form state from the previously form submission.
+ *
+ * @return array
+ *   The form structure for the admin form.
  */
-function content_language_access_admin_form($form, $form_state = NULL) {
+function content_language_access_admin_form($form_state = NULL) {
   $form = array();
 
   $config = _content_language_access_get_config();
