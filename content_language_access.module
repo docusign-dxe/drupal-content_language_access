@@ -38,7 +38,7 @@ function content_language_access_node_access($node, $op, $account) {
         // Checks the configuration defined in admin page.
         $config = _content_language_access_get_config();
         $actual_language_permission = isset($config[$language->language][$node->language]) ? $config[$language->language][$node->language] : FALSE;
-        if (!$actual_language_permission) {
+        if (!$actual_language_permission && !user_access('bypass content_language_access', $account)) {
           return NODE_ACCESS_DENY;
         }
       }
@@ -71,6 +71,10 @@ function content_language_access_permission() {
     'administer content_language_access settings' => array(
       'title' => t('Administer Content Language Access'),
       'description' => t('Perform administration tasks for Content Language Access.'),
+    ),
+    'bypass content_language_access' => array(
+      'title' => t('Bypass Content Language Access restriction'),
+      'description' => t('Allow users to access content in other languages then current site\'s language.'),
     ),
   );
 }
