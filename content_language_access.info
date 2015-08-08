@@ -7,4 +7,4 @@ dependencies[] = node
 
 files[] = content_language_access.test
 
-configure = admin/config/content_language_access
+configure = admin/config/regional/content_language_access
