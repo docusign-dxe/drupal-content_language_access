@@ -75,7 +75,7 @@ function content_language_access_permission() {
     ),
     'bypass content_language_access' => array(
       'title' => t('Bypass Content Language Access restriction'),
-      'description' => t('Allow users to access content in other languages then current site\'s language.'),
+      'description' => t('Allow users to access content in other languages than current site\'s language.'),
     ),
   );
 }
