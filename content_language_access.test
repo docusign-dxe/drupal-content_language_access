@@ -148,6 +148,8 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
 
     $languages = $this->getLanguageList(FALSE);
     foreach ($this->nodes as $node) {
+      $translation_enabled = locale_multilingual_node_type($node->type);
+
       foreach ($languages as $language) {
         if ($language->prefix) {
           $prefix = $language->prefix . '/';
@@ -158,7 +160,7 @@ class ContentLanguageAccessTestCase extends DrupalWebTestCase {
 
         $this->drupalGet($prefix . 'node/' . $node->nid);
 
-        if ($node->language == '' || $node->language == $language->language) {
+        if (!$translation_enabled || !$node->language || $node->language == LANGUAGE_NONE || $node->language == $language->language) {
           $this->assertResponse(200);
         }
         else {
