@@ -32,8 +32,9 @@ function content_language_access_node_access($node, $op, $account) {
 
   // Only checks for view permission.
   if (is_object($node) && $op == 'view') {
+    $translation_enabled = locale_multilingual_node_type($node->type);
     // Ignoring when node is not translatable or the language is neutral
-    if ($node->language && $node->language != LANGUAGE_NONE) {
+    if ($translation_enabled && $node->language && $node->language != LANGUAGE_NONE) {
       // Verifies if the current language is the same of the content.
       if ($node->language != $language->language) {
         // Checks the configuration defined in admin page.
