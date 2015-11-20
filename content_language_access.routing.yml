@@ -1,0 +1,7 @@
+content_language_access.admin_form:
+  path: /admin/config/regional/content_language_access
+  defaults:
+    _title: 'Content language access'
+    _form: \Drupal\content_language_access\Form\ContentLanguageAccessAdminForm
+  requirements:
+    _permission: 'administer content_language_access settings'

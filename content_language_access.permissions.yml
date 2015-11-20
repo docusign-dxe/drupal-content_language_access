@@ -1,0 +1,6 @@
+administer content_language_access settings:
+  title: 'Administer Content Language Access'
+  description: 'Perform administration tasks for Content Language Access.'
+bypass content_language_access:
+  title: 'Bypass Content Language Access restriction'
+  description: 'Allow users to access content in other languages than current site''s language.'
