@@ -57,7 +57,7 @@ function content_language_access_help($path, $arg) {
   switch ($path) {
     // Main module help for the content_language_access module.
     case 'admin/help#content_language_access':
-      return '<p>' . t('Content Language Access Module restricts the access of only contents with language (except neutral language) that are equal of the actual Drupal language being accessed or others that were previous configured in the <a href="@content_language_acess">admin page</a>.', array('@content_language_acess' => url('admin/config/regional/content_language_access'))) . '</p>';
+      return '<p>' . t('Content Language Access Module restricts the access of only contents with language (except neutral language) that are equal of the actual Drupal language being accessed or others that were previous configured in the <a href="@content_language_access">admin page</a>.', array('@content_language_access' => url('admin/config/regional/content_language_access'))) . '</p>';
 
     // Help for admin page for the content_language_access module.
     case 'admin/config/regional/content_language_access':
