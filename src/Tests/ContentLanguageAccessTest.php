@@ -57,16 +57,9 @@ class ContentLanguageAccessTest extends WebTestBase {
   /**
    * Contents created.
    *
-   * @var \Drupal\node\NodeInterface $nodes
+   * @var \Drupal\node\NodeInterface[] $nodes
    */
   private $nodes;
-
-  /**
-   * List of current languages.
-   *
-   * @var LanguageInterface[] $languages
-   */
-  private $languages;
 
   /**
    * Implements setUp().
@@ -84,7 +77,6 @@ class ContentLanguageAccessTest extends WebTestBase {
     ]);
     $this->visitor = $this->drupalCreateUser(['access content']);
 
-    /** @var LanguageInterface[] $languages */
     $this->languages = Drupal::languageManager()->getLanguages();
 
     $this->configureLanguages();
@@ -101,6 +93,8 @@ class ContentLanguageAccessTest extends WebTestBase {
 
     $this->addLanguage('aaa');
     $this->addLanguage('bbb');
+
+    Drupal::languageManager()->reset();
   }
 
   /**
@@ -108,6 +102,14 @@ class ContentLanguageAccessTest extends WebTestBase {
    */
   protected function createContentType() {
     $this->contentType = $this->drupalCreateContentType();
+    // Set the content type to use multilingual support.
+    $this->drupalGet("admin/structure/types/manage/{$this->contentType->id()}");
+    $this->assertText(t('Language settings'), 'Multilingual support widget present on content type configuration form.');
+    $edit = array(
+      'language_configuration[language_alterable]' => TRUE,
+    );
+    $this->drupalPostForm("admin/structure/types/manage/{$this->contentType->id()}", $edit, t('Save content type'));
+    $this->assertRaw(t('The content type %type has been updated.', array('%type' => $this->contentType->label())));
   }
 
   /**
@@ -116,14 +118,14 @@ class ContentLanguageAccessTest extends WebTestBase {
   protected function createContents() {
     $this->drupalLogin($this->adminUser);
 
-    /** @var LanguageInterface[] $languages */
     $languages = $this->getLanguageList();
 
     foreach ($languages as $language_key => $language) {
-      $settings = [];
-      $settings['title'] = 'Test ' . $language->getName();
-      $settings['body'][$language_key][0] = [];
-      $settings['language'] = $language_key;
+      $settings = [
+        'title' => 'Test ' . $language->getName(),
+        'langcode' => $language_key,
+        'type' => $this->contentType->id(),
+      ];
 
       $this->nodes[$language_key] = $this->drupalCreateNode($settings);
     }
@@ -140,9 +142,7 @@ class ContentLanguageAccessTest extends WebTestBase {
    *   With all the languages available (plus the neutral language)
    */
   protected function getLanguageList($with_neutral_language = TRUE) {
-    /** @var LanguageInterface[] $languages */
-    // Problems with cache of Drupal::languageManager()->getLanguages()
-    $languages = $this->languages;
+    $languages = Drupal::languageManager()->getLanguages();
 
     if ($with_neutral_language) {
       $languages[Language::LANGCODE_NOT_SPECIFIED] = new Language([
@@ -166,17 +166,13 @@ class ContentLanguageAccessTest extends WebTestBase {
 
     if (strpos($this->getTextContent(), 'edit-languages-' . $language_code) === FALSE) {
       // Doesn't have language installed so add it.
-      $edit = [];
-      $edit['predefined_langcode'] = 'custom';
-      $edit['langcode'] = $language_code;
-      $edit['label'] = $language_code;
-      $edit['direction'] = LanguageInterface::DIRECTION_LTR;
+      $edit = [
+        'predefined_langcode' => 'custom',
+        'langcode' => $language_code,
+        'label' => $language_code,
+        'direction' => LanguageInterface::DIRECTION_LTR,
+      ];
       $this->drupalPostForm('admin/config/regional/language/add', $edit, t('Add custom language'));
-
-      $this->languages[$language_code] = new Language([
-        'id' => $language_code,
-        'name' => $language_code,
-      ]);
     }
   }
 
@@ -186,10 +182,8 @@ class ContentLanguageAccessTest extends WebTestBase {
   public function testContentLanguageAccess() {
     $this->drupalLogin($this->visitor);
 
-    /** @var \Drupal\Core\Language\LanguageInterface[] $languages */
     $languages = $this->getLanguageList(FALSE);
 
-    $this->verbose(print_r($languages, 1));
     foreach ($this->nodes as $node) {
       foreach ($languages as $language) {
         // English is the default language and does not have prefix.
@@ -205,11 +199,11 @@ class ContentLanguageAccessTest extends WebTestBase {
 
         $this->drupalGet($prefix . 'node/' . $node->id());
 
-        $node_languages = $node->getTranslationLanguages();
+        $node_language = $node->language()->getId();
 
-        if (!isset($node_languages[Language::LANGCODE_NOT_SPECIFIED]) ||
-          !isset($node_languages[Language::LANGCODE_NOT_APPLICABLE]) ||
-          isset($node_languages[$language->getId()])
+        if ($node_language == Language::LANGCODE_NOT_SPECIFIED ||
+          $node_language == Language::LANGCODE_NOT_APPLICABLE ||
+          $node_language == $language->getId()
         ) {
           $this->assertResponse(200);
         }

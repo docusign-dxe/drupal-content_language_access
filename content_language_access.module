@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Language\Language;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
@@ -14,28 +15,29 @@ use Drupal\node\NodeInterface;
  * Implements hook_node_access().
  */
 function content_language_access_node_access(NodeInterface $node, $op, AccountInterface $account) {
-  /** @var \Drupal\Core\Language\LanguageInterface $language */
+  // Ignore verification when the user has bypass permission.
+  if ($account->hasPermission('bypass content_language_access')) {
+    return AccessResult::neutral();
+  }
+
   $language = \Drupal::languageManager()->getCurrentLanguage();
 
   // Only checks for view permission.
   if (is_object($node) && $op == 'view') {
-    /** @var \Drupal\Core\Language\LanguageInterface[] $node_languages */
-    $node_languages = $node->getTranslationLanguages();
+    $node_language = $node->language()->getId();
+
     // Ignoring the language is neutral and not applicable.
-    if (!isset($node_languages[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED]) &&
-      !isset($node_languages[\Drupal\Core\Language\Language::LANGCODE_NOT_APPLICABLE])
+    if ($node_language != Language::LANGCODE_NOT_SPECIFIED &&
+      $node_language != Language::LANGCODE_NOT_APPLICABLE
     ) {
-      // Verifies if the current language is the same of the content.
-      if (!isset($node_languages[$language->getId()])) {
+      // Verifies if the current language is not the same of the content.
+      if ($node_language != $language->getId()) {
         // Checks the configuration defined in admin page.
-        /** @var \Drupal\Core\Config\ImmutableConfig $config */
         $config = Drupal::config('content_language_access.settings');
 
-        foreach ($node_languages as $language_node_key => $node_language) {
-          $actual_language_permission = (bool) $config->get($language->getId() . '-' . $language_node_key);
-          if (!$actual_language_permission && !$account->hasPermission('bypass content_language_access')) {
-            return AccessResult::forbidden();
-          }
+        $actual_language_permission = (bool) $config->get($language->getId() . '_' . $node_language);
+        if (!$actual_language_permission) {
+          return AccessResult::forbidden();
         }
       }
     }

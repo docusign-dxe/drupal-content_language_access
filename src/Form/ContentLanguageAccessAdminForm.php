@@ -27,12 +27,11 @@ class ContentLanguageAccessAdminForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    /** @var \Drupal\Core\Config\Config|\Drupal\Core\Config\ImmutableConfig $config */
     $config = $this->config('content_language_access.settings');
 
     foreach (Element::children($form['content_language_access']) as $group) {
       foreach (Element::children($form['content_language_access'][$group]) as $variable) {
-        $config->set($variable, $form_state->getValue($variable));
+        $config->set($variable, (bool) $form_state->getValue($variable));
       }
     }
 
@@ -52,10 +51,8 @@ class ContentLanguageAccessAdminForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state = NULL) {
-    /** @var array $form */
     $form = [];
 
-    /** @var \Drupal\Core\Config\Config|\Drupal\Core\Config\ImmutableConfig $config */
     $config = $this->config('content_language_access.settings');
 
     $form['content_language_access'] = [
@@ -64,7 +61,6 @@ class ContentLanguageAccessAdminForm extends ConfigFormBase {
       '#open' => TRUE,
     ];
 
-    /** @var \Drupal\Core\Language\LanguageInterface[] $languages */
     $languages = \Drupal::languageManager()->getLanguages();
     foreach ($languages as $language) {
       if (!$language->isLocked()) {
@@ -77,18 +73,18 @@ class ContentLanguageAccessAdminForm extends ConfigFormBase {
         ];
         foreach ($languages as $language_perm) {
           if (!$language_perm->isLocked()) {
-            $form['content_language_access'][$language->getId()][$language->getId() . '-' . $language_perm->getId()] = [
+            $form['content_language_access'][$language->getId()][$language->getId() . '_' . $language_perm->getId()] = [
               '#type' => 'checkbox',
               '#title' => t('Content language: @language', [
                 '@language' => $language_perm->getName(),
               ]),
-              '#default_value' => (bool) $config->get($language->getId() . '-' . $language_perm->getId()),
+              '#default_value' => (bool) $config->get($language->getId() . '_' . $language_perm->getId()),
             ];
 
             // Only shows the same language for better visualization.
             if ($language->getId() == $language_perm->getId()) {
-              $form['content_language_access'][$language->getId()][$language->getId() . '-' . $language_perm->getId()]['#disabled'] = TRUE;
-              $form['content_language_access'][$language->getId()][$language->getId() . '-' . $language_perm->getId()]['#value'] = TRUE;
+              $form['content_language_access'][$language->getId()][$language->getId() . '_' . $language_perm->getId()]['#disabled'] = TRUE;
+              $form['content_language_access'][$language->getId()][$language->getId() . '_' . $language_perm->getId()]['#value'] = TRUE;
             }
           }
         }
