@@ -10,6 +10,7 @@ use Drupal\Core\Language\Language;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
+use Drupal\Core\Url;
 
 /**
  * Implements hook_node_access().
@@ -53,7 +54,7 @@ function content_language_access_help($route_name, RouteMatchInterface $route_ma
   switch ($route_name) {
     // Main module help for the content_language_access module.
     case 'help.page.content_language_access':
-      return '<p>' . t('Content Language Access Module restricts the access of only contents with language (except neutral language) that are equal of the actual Drupal language being accessed or others that were previous configured in the <a href=":content_language_access">admin page</a>.', [':content_language_access' => \Drupal::url('content_language_access.admin_form')]) . '</p>';
+      return '<p>' . t('Content Language Access Module restricts the access of only contents with language (except neutral language) that are equal of the actual Drupal language being accessed or others that were previous configured in the <a href=":content_language_access">admin page</a>.', [':content_language_access' => Url::fromRoute('content_language_access.admin_form')->toString()]) . '</p>';
 
     // Help for admin page for the content_language_access module.
     case 'content_language_access.admin_form':
