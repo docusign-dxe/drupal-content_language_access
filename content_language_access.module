@@ -2,6 +2,8 @@
 
 /**
  * @file
+ * Include language permissions to modify content.
+ *
  * This module provides access checking of the current language of the site
  * with the language of the content (language neutral are not considered).
  */
@@ -33,7 +35,7 @@ function content_language_access_node_access($node, $op, $account) {
   // Only checks for view permission.
   if (is_object($node) && $op == 'view') {
     $translation_enabled = locale_multilingual_node_type($node->type);
-    // Ignoring when node is not translatable or the language is neutral
+    // Ignoring when node is not translatable or the language is neutral.
     if ($translation_enabled && $node->language && $node->language != LANGUAGE_NONE) {
       // Verifies if the current language is the same of the content.
       if ($node->language != $language->language) {
@@ -76,7 +78,7 @@ function content_language_access_permission() {
     ),
     'bypass content_language_access' => array(
       'title' => t('Bypass Content Language Access restriction'),
-      'description' => t('Allow users to access content in other languages than current site\'s language.'),
+      'description' => t("Allow users to access content in other languages than current site's language."),
     ),
   );
 }

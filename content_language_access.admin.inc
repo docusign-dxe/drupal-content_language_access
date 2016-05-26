@@ -2,7 +2,7 @@
 
 /**
  * @file
- * This files creates an admin page for this module
+ * This files creates an admin page for this module.
  */
 
 /**

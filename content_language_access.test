@@ -2,9 +2,12 @@
 
 /**
  * @file
- * Test suite for content language access module
+ * Test suite for content language access module.
  */
 
+/**
+ * Defines the content language access test class.
+ */
 class ContentLanguageAccessTestCase extends DrupalWebTestCase {
 
   /**
