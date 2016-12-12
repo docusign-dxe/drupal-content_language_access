@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Test suite for content language access module.
- */
-
 namespace Drupal\content_language_access\Tests;
 
 use Drupal;
@@ -22,42 +17,42 @@ class ContentLanguageAccessTest extends WebTestBase {
   /**
    * Drupal installation profile to use.
    *
-   * @var string $profile
+   * @var string
    */
   protected $profile = 'standard';
 
   /**
    * Modules to install.
    *
-   * @var array $modules
+   * @var array
    */
   public static $modules = ['node', 'locale', 'content_language_access'];
 
   /**
    * A simple user with 'access content' permission.
    *
-   * @var \Drupal\user\Entity\User $adminUser
+   * @var \Drupal\user\Entity\User
    */
   private $adminUser;
 
   /**
    * A simple user with 'access content' permission.
    *
-   * @var \Drupal\user\Entity\User $visitor
+   * @var \Drupal\user\Entity\User
    */
   private $visitor;
 
   /**
    * Content type created for tests.
    *
-   * @var \Drupal\node\Entity\NodeType $contentType
+   * @var \Drupal\node\Entity\NodeType
    */
   private $contentType;
 
   /**
    * Contents created.
    *
-   * @var \Drupal\node\NodeInterface[] $nodes
+   * @var \Drupal\node\NodeInterface[]
    */
   private $nodes;
 
@@ -188,8 +183,8 @@ class ContentLanguageAccessTest extends WebTestBase {
       foreach ($languages as $language) {
         // English is the default language and does not have prefix.
         if ($language->getId() != Drupal::languageManager()
-            ->getDefaultLanguage()
-            ->getId()
+          ->getDefaultLanguage()
+          ->getId()
         ) {
           $prefix = $language->getId() . '/';
         }

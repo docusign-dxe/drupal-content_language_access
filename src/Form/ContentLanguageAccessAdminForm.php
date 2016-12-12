@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\content_language_access\Form\ContentLanguageAccessAdminForm.
- */
-
 namespace Drupal\content_language_access\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
