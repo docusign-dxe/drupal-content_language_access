@@ -38,6 +38,12 @@ function content_language_access_node_access(NodeInterface $node, $op, AccountIn
 
         $actual_language_permission = (bool) $config->get($language->getId() . '_' . $node_language);
         if (!$actual_language_permission) {
+
+          // Be neutral while translating content
+          if (\Drupal::routeMatch()->getRouteName() == 'entity.node.content_translation_add') {
+            return AccessResult::neutral();
+          }
+
           return AccessResult::forbidden();
         }
       }
