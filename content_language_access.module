@@ -39,6 +39,16 @@ function content_language_access_node_access($node, $op, $account) {
     if ($translation_enabled && $node->language && $node->language != LANGUAGE_NONE) {
       // Verifies if the current language is the same of the content.
       if ($node->language != $language->language) {
+
+        // Ignore verification while translating content. Drupal passes the
+        // translation and target parameters during the translation.
+        // Example: node/add/article?translation=8&target=pt-br
+        if (drupal_match_path(drupal_get_path_alias(), 'node/add/*') &&
+          isset($_GET['translation']) &&
+          isset($_GET['target'])) {
+          return NODE_ACCESS_IGNORE;
+        }
+
         // Checks the configuration defined in admin page.
         $config = _content_language_access_get_config();
         $actual_language_permission = isset($config[$language->language][$node->language]) ? $config[$language->language][$node->language] : FALSE;
