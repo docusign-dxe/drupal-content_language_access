@@ -1,10 +1,10 @@
-name: 'Content language access'
-description: 'Provides access checking of the current language of the site against the language of the content.'
+name: Content Language Access
+description: Provides access checking of the current language of the site against the language of the content.
 core: 8.x
-package: 'Access control'
+package: Access control
 dependencies:
-  - locale
-  - node
+  - drupal:locale
+  - drupal:node
 type: module
 
 configure: content_language_access.admin_form
