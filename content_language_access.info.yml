@@ -1,6 +1,7 @@
 name: Content Language Access
 description: Provides access checking of the current language of the site against the language of the content.
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: Access control
 dependencies:
   - drupal:locale
