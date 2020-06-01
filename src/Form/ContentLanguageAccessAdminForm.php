@@ -52,7 +52,7 @@ class ContentLanguageAccessAdminForm extends ConfigFormBase {
 
     $form['content_language_access'] = [
       '#type' => 'details',
-      '#title' => t('Permissions'),
+      '#title' => $this->t('Permissions'),
       '#open' => TRUE,
     ];
 
@@ -61,7 +61,7 @@ class ContentLanguageAccessAdminForm extends ConfigFormBase {
       if (!$language->isLocked()) {
         $form['content_language_access'][$language->getId()] = [
           '#type' => 'details',
-          '#title' => t('Drupal language: @language', [
+          '#title' => $this->t('Drupal language: @language', [
             '@language' => $language->getName(),
           ]),
           '#open' => TRUE,
@@ -70,7 +70,7 @@ class ContentLanguageAccessAdminForm extends ConfigFormBase {
           if (!$language_perm->isLocked()) {
             $form['content_language_access'][$language->getId()][$language->getId() . '_' . $language_perm->getId()] = [
               '#type' => 'checkbox',
-              '#title' => t('Content language: @language', [
+              '#title' => $this->t('Content language: @language', [
                 '@language' => $language_perm->getName(),
               ]),
               '#default_value' => (bool) $config->get($language->getId() . '_' . $language_perm->getId()),
