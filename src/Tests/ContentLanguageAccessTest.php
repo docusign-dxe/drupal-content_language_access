@@ -100,11 +100,11 @@ class ContentLanguageAccessTest extends WebTestBase {
     // Set the content type to use multilingual support.
     $this->drupalGet("admin/structure/types/manage/{$this->contentType->id()}");
     $this->assertText(t('Language settings'), 'Multilingual support widget present on content type configuration form.');
-    $edit = array(
+    $edit = [
       'language_configuration[language_alterable]' => TRUE,
-    );
+    ];
     $this->drupalPostForm("admin/structure/types/manage/{$this->contentType->id()}", $edit, t('Save content type'));
-    $this->assertRaw(t('The content type %type has been updated.', array('%type' => $this->contentType->label())));
+    $this->assertRaw(t('The content type %type has been updated.', ['%type' => $this->contentType->label()]));
   }
 
   /**
@@ -133,7 +133,7 @@ class ContentLanguageAccessTest extends WebTestBase {
    *   Optional, specifies if the function needs to return also the neutral
    *   language.
    *
-   * @return LanguageInterface[]
+   * @return \Drupal\Core\Language\LanguageInterface[]
    *   With all the languages available (plus the neutral language)
    */
   protected function getLanguageList($with_neutral_language = TRUE) {
