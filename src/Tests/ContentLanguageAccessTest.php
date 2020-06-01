@@ -5,14 +5,14 @@ namespace Drupal\content_language_access\Tests;
 use Drupal;
 use Drupal\Core\Language\Language;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\simpletest\WebTestBase;
+use \Drupal\Tests\BrowserTestBase;
 
 /**
  * Test the features of content_language_access module.
  *
  * @group content_language_access
  */
-class ContentLanguageAccessTest extends WebTestBase {
+class ContentLanguageAccessTest extends BrowserTestBase {
 
   /**
    * Drupal installation profile to use.
@@ -95,7 +95,7 @@ class ContentLanguageAccessTest extends WebTestBase {
   /**
    * Creates a random content type for test execution.
    */
-  protected function createContentType() {
+  protected function createContentType(array $values = []) {
     $this->contentType = $this->drupalCreateContentType();
     // Set the content type to use multilingual support.
     $this->drupalGet("admin/structure/types/manage/{$this->contentType->id()}");
