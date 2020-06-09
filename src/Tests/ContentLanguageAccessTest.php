@@ -26,7 +26,7 @@ class ContentLanguageAccessTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'locale', 'content_language_access'];
+  public static $modules = ['node', 'language', 'content_language_access'];
 
   /**
    * A simple user with 'access content' permission.
