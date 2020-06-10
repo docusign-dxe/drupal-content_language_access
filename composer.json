@@ -1,0 +1,7 @@
+{
+    "name": "drupal/content_language_access",
+    "description": "Provides access checking of the current language of the site against the language of the content.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "require": {}
+}
